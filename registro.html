@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación - M3 Expressive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6750A4;
+            --on-primary: #FFFFFF;
+            --primary-container: #EADDFF;
+            --on-primary-container: #21005D;
+            --secondary: #625B71;
+            --surface: #FEF7FF;
+            --surface-container: #F3EDF7;
+            --surface-container-high: #ECE6F0;
+            --on-surface: #1D1B20;
+            --on-surface-variant: #49454F;
+            --error: #BA1A1A;
+            --on-error: #FFFFFF;
+            --outline: #79747E;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 8px 32px var(--shadow);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon .material-icons {
+            color: var(--on-primary);
+            font-size: 32px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: var(--on-surface-variant);
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            background: var(--surface-container);
+            border-radius: 100px;
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--secondary-container, #E8DEF8);
+            color: var(--on-secondary-container, #1D192B);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            padding-left: 48px;
+            border: 2px solid var(--outline);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--surface);
+            color: var(--on-surface);
+            transition: all 0.3s ease;
+            font-family: 'Roboto Flex', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface-container-high);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--on-surface-variant);
+            pointer-events: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--on-surface-variant);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .name-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Roboto Flex', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--on-primary);
+            box-shadow: 0 4px 8px rgba(103, 80, 164, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #5546A0;
+            box-shadow: 0 6px 16px rgba(103, 80, 164, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .error-message {
+            background: #FFDAD6;
+            color: var(--error);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message.show {
+            display: flex;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-message {
+            background: #C7F0BD;
+            color: #1E4620;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard {
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            margin-bottom: 32px;
+        }
+
+        .user-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            color: var(--on-surface-variant);
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: var(--surface-container-high);
+            color: var(--primary);
+            margin-top: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-container);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .download-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--outline);
+        }
+
+        .btn-download {
+            background: #2E7D32;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #1B5E20;
+        }
+
+        .info-box {
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Formularios de Login/Registro -->
+        <div id="authCard" class="card">
+            <div class="logo">
+                <div class="logo-icon">
+                    <span class="material-icons">lock</span>
+                </div>
+                <h1>Bienvenido</h1>
+                <p class="subtitle">Inicia sesión o crea una cuenta</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Iniciar Sesión</button>
+                <button class="tab" onclick="switchTab('register')">Registrarse</button>
+            </div>
+
+            <div id="errorMessage" class="error-message">
+                <span class="material-icons">error</span>
+                <span id="errorText"></span>
+            </div>
+
+            <div id="successMessage" class="success-message">
+                <span class="material-icons">check_circle</span>
+                <span id="successText"></span>
+            </div>
+
+            <!-- Formulario de Login -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">email</span>
+                        <input type="email" id="loginEmail" required placeholder="tu@email.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">lock</span>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                        <span class="material-icons password-toggle" onclick="togglePassword('loginPassword')">visibility</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span id="loginBtnText">Iniciar Sesión</span>
+                </button>
+            </form>
+
+            <!-- Formulario de Registro -->
+            <form id="registerForm" class="hidden">
+                <div class="name-group">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <div class="input-wrapper">
+                            <span class="material-icons input-icon">person</span>
+                            <input type="text" id="registerNombre" required placeholder="Juan">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <div class="input-wrapper">
+                            <span class="material-icons input-icon">person</span>
+                            <input type="text" id="registerApellido" required placeholder="Pérez">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">email</span>
+                        <input type="email" id="registerEmail" required placeholder="tu@email.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <div class="input-wrapper">
+                        <span class="material-icons input-icon">lock</span>
+                        <input type="password" id="registerPassword" required placeholder="••••••••" minlength="6">
+                        <span class="material-icons password-toggle" onclick="togglePassword('registerPassword')">visibility</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    <span id="registerBtnText">Crear Cuenta</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Dashboard del Usuario -->
+        <div id="dashboard" class="card hidden">
+            <div class="dashboard">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Usuario</div>
+                    <div class="user-email" id="userEmail">usuario@email.com</div>
+                </div>
+                
+                <div class="download-section">
+                    <div class="info-box">
+                        <span class="material-icons">info</span>
+                        <span>Total de usuarios registrados: <strong id="userCount">0</strong></span>
+                    </div>
+                    <button class="btn btn-download" onclick="downloadCSV()">
+                        <span class="material-icons">download</span>
+                        Descargar Registros CSV
+                    </button>
+                </div>
+
+                <button class="btn btn-primary" onclick="logout()" style="margin-top: 16px;">
+                    <span class="material-icons">logout</span>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos simulada en memoria
+        let users = {};
+        let currentUser = null;
+        let currentTab = 'login';
+
+        // Cambiar entre tabs
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+            hideMessages();
+        }
+
+        // Toggle visibilidad de contraseña
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = event.target;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        // Mostrar mensajes
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successDiv.classList.add('show');
+            
+            setTimeout(() => {
+                successDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        // Función para generar CSV
+        function generateCSV() {
+            // Encabezados del CSV
+            let csv = 'Nombre,Apellido,Email,Fecha de Registro\n';
+            
+            // Agregar cada usuario
+            for (let email in users) {
+                const user = users[email];
+                // Escapar comas en los datos
+                const nombre = user.nombre.replace(/,/g, ';');
+                const apellido = user.apellido.replace(/,/g, ';');
+                const emailEscaped = user.email.replace(/,/g, ';');
+                const fecha = user.fechaRegistro || new Date().toLocaleString('es-MX');
+                
+                csv += `${nombre},${apellido},${emailEscaped},${fecha}\n`;
+            }
+            
+            return csv;
+        }
+
+        // Función para descargar CSV
+        function downloadCSV() {
+            const csv = generateCSV();
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `usuarios_registrados_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showSuccess('¡Archivo CSV descargado exitosamente!');
+        }
+
+        // Actualizar contador de usuarios
+        function updateUserCount() {
+            const count = Object.keys(users).length;
+            const countElement = document.getElementById('userCount');
+            if (countElement) {
+                countElement.textContent = count;
+            }
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+            
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            btn.disabled = true;
+            btnText.innerHTML = '<div class="spinner"></div>';
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Simular delay del servidor
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            if (users[email] && users[email].password === password) {
+                currentUser = users[email];
+                showDashboard(currentUser);
+            } else {
+                showError('Email o contraseña incorrectos');
+            }
+
+            btn.disabled = false;
+            btnText.textContent = 'Iniciar Sesión';
+        });
+
+        // Registro
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessages();
+            
+            const btn = document.getElementById('registerBtn');
+            const btnText = document.getElementById('registerBtnText');
+            btn.disabled = true;
+            btnText.innerHTML = '<div class="spinner"></div>';
+
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const nombre = document.getElementById('registerNombre').value;
+            const apellido = document.getElementById('registerApellido').value;
+
+            // Simular delay del servidor
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            if (users[email]) {
+                showError('Este email ya está registrado');
+                btn.disabled = false;
+                btnText.textContent = 'Crear Cuenta';
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('La contraseña debe tener al menos 6 caracteres');
+                btn.disabled = false;
+                btnText.textContent = 'Crear Cuenta';
+                return;
+            }
+
+            // Crear usuario con fecha de registro
+            const newUser = {
+                email,
+                password,
+                nombre,
+                apellido,
+                fechaRegistro: new Date().toLocaleString('es-MX', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                })
+            };
+
+            users[email] = newUser;
+            currentUser = newUser;
+
+            showSuccess('¡Cuenta creada exitosamente! Se guardará en el CSV.');
+            setTimeout(() => {
+                showDashboard(currentUser);
+            }, 1000);
+
+            btn.disabled = false;
+            btnText.textContent = 'Crear Cuenta';
+        });
+
+        // Mostrar dashboard
+        function showDashboard(user) {
+            document.getElementById('authCard').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            
+            const iniciales = (user.nombre[0] + user.apellido[0]).toUpperCase();
+            document.getElementById('userAvatar').textContent = iniciales;
+            document.getElementById('userName').textContent = `${user.nombre} ${user.apellido}`;
+            document.getElementById('userEmail').textContent = user.email;
+            
+            updateUserCount();
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('authCard').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+    </script>
+</body>
+</html>
