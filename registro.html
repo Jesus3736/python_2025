@@ -483,6 +483,7 @@
         let users = {};
         let currentUser = null;
         let currentTab = 'login';
+        let userIdCounter = 1;
 
         // Cambiar entre tabs
         function switchTab(tab) {
@@ -541,18 +542,19 @@
         // Función para generar CSV
         function generateCSV() {
             // Encabezados del CSV
-            let csv = 'Nombre,Apellido,Email,Fecha de Registro\n';
+            let csv = 'ID,Nombre,Apellido,Email,Fecha de Registro\n';
             
             // Agregar cada usuario
             for (let email in users) {
                 const user = users[email];
                 // Escapar comas en los datos
+                const id = user.id;
                 const nombre = user.nombre.replace(/,/g, ';');
                 const apellido = user.apellido.replace(/,/g, ';');
                 const emailEscaped = user.email.replace(/,/g, ';');
                 const fecha = user.fechaRegistro || new Date().toLocaleString('es-MX');
                 
-                csv += `${nombre},${apellido},${emailEscaped},${fecha}\n`;
+                csv += `${id},${nombre},${apellido},${emailEscaped},${fecha}\n`;
             }
             
             return csv;
@@ -646,6 +648,7 @@
 
             // Crear usuario con fecha de registro
             const newUser = {
+                id: userIdCounter++,
                 email,
                 password,
                 nombre,
